@@ -24,7 +24,7 @@ LLM agents need to discover and use tools. Right now there are two worlds:
 
 The gap is discovery. MTP fills it.
 
-## Three things MTP does
+## Four things MTP does
 
 ### 1. Makes any CLI tool understandable to an LLM
 

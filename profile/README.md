@@ -2,6 +2,28 @@
 
 **A minimal standard for making CLI tools LLM-discoverable via `--describe`.**
 
+LLM agents need to discover and use tools. Right now there are two worlds:
+
+**CLI tools** are the backbone of software development. They're composable (`|`), scriptable, version-controlled, and work everywhere. But LLMs can't discover what a CLI does. They have to parse `--help` text, guess at arguments, and hope for the best.
+
+**MCP (Model Context Protocol)** solves discovery beautifully. Tools declare typed schemas, and LLM hosts discover them via a structured handshake. But MCP requires running a server process, speaking JSON-RPC over stdio/SSE, and building within the MCP ecosystem. Your existing CLI tools don't get any of this for free.
+
+| | CLI tools | MCP tools |
+|---|---|---|
+| **Composability** | First-class. Pipes, shell scripts, xargs. 50 years of Unix | Requires an orchestrator or agent framework |
+| **Discovery** | Poor. Parse `--help` and hope | Excellent. Typed schemas via handshake |
+| **Runtime** | Any shell, anywhere | Needs an MCP host (Claude Desktop, etc.) |
+| **Deployment** | `brew install`, `cargo install`, a binary in PATH | Run a server process, configure the host |
+| **Interop** | Pipes to anything | Talks to MCP clients only |
+| **Scriptable without an LLM** | Yes, that's the whole point of CLIs | Not really, designed for LLM interaction |
+| **Streaming / subscriptions** | Limited (stdout streaming) | Built-in (SSE, notifications) |
+| **Stateful interaction** | Stateless by design (each invocation is fresh) | Stateful sessions with context |
+| **Adoption cost** | One flag/decorator | New protocol, server scaffolding, SDK |
+
+MCP is the right choice when you need stateful sessions, streaming, or deep integration with an LLM host. CLIs are the right choice when you want composability, scriptability, and zero infrastructure.
+
+The gap is discovery. MTP fills it.
+
 Any tool that responds to `--describe` with a JSON manifest becomes instantly discoverable and usable by any LLM agent. No sidecar processes, no daemon servers, no complex handshakes. Just a CLI flag that returns structured JSON.
 
 ```bash

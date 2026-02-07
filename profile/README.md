@@ -1,8 +1,10 @@
 # Model Tools Protocol - Bash is all you need!
 
-MTP is a spec that proposes every CLI tool should support a `--describe` flag: a machine-readable, MCP-style JSON schema that tells an LLM exactly what the tool does, what arguments it takes, and how to call it. Think of it as `--help` for machines. Where MCP requires a server process, SDK, and JSON-RPC transport to give an LLM typed tool schemas, `--describe` gives the same structured metadata with just a flag.
+The core philosophy: MCP servers shouldn't need to exist. The world already has millions of CLI tools that are composable, scriptable, and work everywhere. The only thing they were missing was a way for LLMs to understand them. MTP fixes that with a single flag.
 
-This project also introduces [mtpcli](https://github.com/modeltoolsprotocol/mtpcli), a tool that converts every MCP server into a composable CLI and every `--describe` CLI into an MCP server.
+MTP is a spec that proposes every CLI tool should support a `--describe` flag: a machine-readable JSON schema that tells an LLM exactly what the tool does, what arguments it takes, and how to call it. Think of it as `--help` for machines. Same typed schemas that MCP provides, but without the server process, SDK, or JSON-RPC transport.
+
+For the MCP servers that already exist, [mtpcli](https://github.com/modeltoolsprotocol/mtpcli) converts them into composable CLI tools, and converts any `--describe` CLI into an MCP server for backwards compatibility with MCP hosts.
 
 ## The problem
 

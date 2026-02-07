@@ -1,6 +1,6 @@
 # Model Tools Protocol (MTP)
 
-**MTP is a spec that proposes every CLI tool should support a `--describe` flag: a machine-readable, MCP-style JSON schema that tells an LLM exactly what the tool does, what arguments it takes, and how to call it.** Think of it as `--help` for machines. Where MCP requires a server process, SDK, and JSON-RPC transport to give an LLM typed tool schemas, `--describe` gives the same structured metadata with just a flag.
+MTP is a spec that proposes every CLI tool should support a `--describe` flag: a machine-readable, MCP-style JSON schema that tells an LLM exactly what the tool does, what arguments it takes, and how to call it. Think of it as `--help` for machines. Where MCP requires a server process, SDK, and JSON-RPC transport to give an LLM typed tool schemas, `--describe` gives the same structured metadata with just a flag.
 
 LLM agents need to discover and use tools. Right now there are two worlds:
 

@@ -92,6 +92,23 @@ The 2,500+ MCP servers people have built? They're all CLI tools now. Pipe their 
 
 **You don't have to pick a side.** The same tool can be both a `--describe` CLI and an MCP server. The bridge is bidirectional. Build one, get both.
 
+### 4. Search across tools without blowing out the context window
+
+With MCP, every tool's schema has to be loaded into the LLM's context upfront. Five servers with 20 tools each means hundreds of tool definitions consuming tens of thousands of tokens before the conversation starts. `mtpcli search` takes a different approach: search across all your tools outside the model, and only surface the relevant ones.
+
+```bash
+# Search across specific tools
+$ mtpcli search "get a confluence page" -- atlasctl jiractl mytool
+
+# Search all cached tools
+$ mtpcli search "deploy to production"
+
+# Scan PATH for all describe-compatible tools and search
+$ mtpcli search --scan-path "convert csv to json"
+```
+
+The LLM describes what it needs in natural language, `mtpcli search` finds the matching commands, and only those commands enter the context. Instead of 134K tokens of tool definitions, the model sees the 2-3 tools that are actually relevant.
+
 ## Why composability matters
 
 When an LLM orchestrates tool calls via MCP, every intermediate result flows back through the model. Pull a Confluence page? The entire page body enters the context window. Search Jira for existing tickets? Every result goes into the context window. Create a ticket? The response goes into the context window. A five-step workflow means five inference round-trips, each one slow, expensive, and adding to an ever-growing context that the model has to re-read on every turn. Anthropic themselves found that tool definitions alone can consume [134,000 tokens](https://www.anthropic.com/engineering/advanced-tool-use) before the user has said a word.

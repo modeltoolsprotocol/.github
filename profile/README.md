@@ -2,6 +2,10 @@
 
 MTP is a spec that proposes every CLI tool should support a `--describe` flag: a machine-readable, MCP-style JSON schema that tells an LLM exactly what the tool does, what arguments it takes, and how to call it. Think of it as `--help` for machines. Where MCP requires a server process, SDK, and JSON-RPC transport to give an LLM typed tool schemas, `--describe` gives the same structured metadata with just a flag.
 
+This project also introduces [mtpcli](https://github.com/modeltoolsprotocol/mtpcli), a tool that converts every MCP server into a composable CLI and every `--describe` CLI into an MCP server.
+
+## The problem
+
 LLM agents need to discover and use tools. Right now there are two worlds:
 
 **CLI tools** are the backbone of software development. They're composable (`|`), scriptable, version-controlled, and work everywhere. But LLMs can't discover what a CLI does. They have to parse `--help` text, guess at arguments, and hope for the best.

@@ -1,6 +1,6 @@
 # Model Tools Protocol
 
-**`--help` for machines.** A minimal standard for making CLI tools LLM-discoverable via `--describe`.
+**`--help` for machines.** A minimal standard for making CLI tools LLM-discoverable via `--mtp-describe`.
 
 See the **[protocol spec and rationale](https://github.com/modeltoolsprotocol/modeltoolsprotocol)** for the full story.
 

@@ -54,7 +54,7 @@ $ atlasctl --describe
 }
 ```
 
-If you're already using a CLI framework (Click, Cobra, Clap, Commander), you get `--describe` for free. The SDK reads the types, defaults, and help strings your framework already knows about. One function call, zero extra documentation.
+If you're already using a CLI framework (Click, Cobra, Clap, Commander), just add the MTP SDK and you get `--describe` for free. The SDK reads the types, defaults, and help strings your framework already knows about. One function call, zero extra documentation.
 
 ### 2. Turns any CLI into an MCP server
 

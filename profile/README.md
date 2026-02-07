@@ -96,9 +96,9 @@ The 2,500+ MCP servers people have built? They're all CLI tools now. Pipe their 
 
 **You don't have to pick a side.** The same tool can be both a `--describe` CLI and an MCP server. The bridge is bidirectional. Build one, get both.
 
-### 4. Search across tools without blowing out the context window
+### 4. Search across tools
 
-With MCP, every tool's schema has to be loaded into the LLM's context upfront. Five servers with 20 tools each means hundreds of tool definitions consuming tens of thousands of tokens before the conversation starts. `mtpcli search` takes a different approach: search across all your tools outside the model, and only surface the relevant ones.
+`mtpcli search` finds relevant commands across all your `--describe` tools without requiring each tool's full schema to be configured in an LLM host.
 
 ```bash
 # Search across specific tools
@@ -111,7 +111,7 @@ $ mtpcli search "deploy to production"
 $ mtpcli search --scan-path "convert csv to json"
 ```
 
-The LLM describes what it needs in natural language, `mtpcli search` finds the matching commands, and only those commands enter the context. Instead of 134K tokens of tool definitions, the model sees the 2-3 tools that are actually relevant.
+The LLM describes what it needs in natural language, `mtpcli search` finds the matching commands, and only those commands enter the context.
 
 ## Why composability matters
 

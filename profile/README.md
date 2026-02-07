@@ -113,7 +113,9 @@ The LLM describes what it needs in natural language, `mtpcli search` finds the m
 
 ## Why composability matters
 
-When an LLM orchestrates tool calls via MCP, every intermediate result flows back through the model. Pull a Confluence page? The entire page body enters the context window. Search Jira for existing tickets? Every result goes into the context window. Create a ticket? The response goes into the context window. A five-step workflow means five inference round-trips, each one slow, expensive, and adding to an ever-growing context that the model has to re-read on every turn. Anthropic themselves found that tool definitions alone can consume [134,000 tokens](https://www.anthropic.com/engineering/advanced-tool-use) before the user has said a word.
+MCP has two context window problems. First, every tool's schema has to be loaded into the LLM's context upfront so the model knows what it can call. Anthropic themselves found that [tool definitions alone consumed 134,000 tokens](https://www.anthropic.com/engineering/advanced-tool-use) before the user had said a word. That's your entire context window, eaten by metadata.
+
+Second, when the LLM orchestrates tool calls, every intermediate result flows back through the model. Pull a Confluence page? The entire page body enters the context window. Search Jira for existing tickets? Every result goes into the context window. A five-step workflow means five inference round-trips, each one slow, expensive, and adding to an ever-growing context that the model has to re-read on every turn.
 
 With composable CLIs, the same workflow is a bash script. This example mixes a native `--describe` CLI tool (`atlasctl`) with Atlassian's MCP server (via `mtpcli wrap`) in the same pipeline:
 

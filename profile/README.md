@@ -113,21 +113,32 @@ The LLM describes what it needs in natural language, `mtpcli search` finds the m
 
 When an LLM orchestrates tool calls via MCP, every intermediate result flows back through the model. Pull a Confluence page? The entire page body enters the context window. Search Jira for existing tickets? Every result goes into the context window. Create a ticket? The response goes into the context window. A five-step workflow means five inference round-trips, each one slow, expensive, and adding to an ever-growing context that the model has to re-read on every turn. Anthropic themselves found that tool definitions alone can consume [134,000 tokens](https://www.anthropic.com/engineering/advanced-tool-use) before the user has said a word.
 
-With composable CLIs, the same workflow is a bash script:
+With composable CLIs, the same workflow is a bash script. This example mixes a native `--describe` CLI tool (`atlasctl`) with Atlassian's MCP server (via `mtpcli wrap`) in the same pipeline:
 
 ```bash
-# Pull a Confluence page, find action items, create Jira tickets for untracked ones
+ATLASSIAN_MCP="mtpcli wrap --url https://mcp.atlassian.com/v1/mcp"
+
+# Pull a Confluence page using a --describe CLI tool
 atlasctl confluence page get --page-id "$PAGE_ID" --format markdown \
   | extract-actions \
   | while IFS=$'\t' read -r assignee summary; do
-      existing=$(jiractl search --assignee "$assignee" --summary "$summary" --status open)
-      if [ -z "$existing" ]; then
-        jiractl create --assignee "$assignee" --summary "$summary" --type task
+      # Search Jira via the Atlassian MCP server
+      existing=$($ATLASSIAN_MCP searchJiraIssuesUsingJql \
+        -- --cloudId "$CLOUD_ID" \
+           --jql "assignee = '$assignee' AND summary ~ '$summary' AND status != Done" \
+        | jq '.issues | length')
+      if [ "$existing" -eq 0 ]; then
+        # Create a ticket via the same MCP server
+        $ATLASSIAN_MCP createJiraIssue \
+          -- --cloudId "$CLOUD_ID" \
+             --projectKey PROJ \
+             --issueTypeName Task \
+             --summary "$summary"
       fi
     done
 ```
 
-No LLM in the loop. No tokens burned on intermediate data the model doesn't need to see. No context window bloat. Deterministic, fast, free. Runs in CI, runs in a cron job, runs on a Raspberry Pi.
+A `--describe` CLI and an MCP server, composed in the same pipeline. No LLM in the loop. No tokens burned on intermediate data the model doesn't need to see. No context window bloat. Deterministic, fast, free. Runs in CI, runs in a cron job, runs on a Raspberry Pi.
 
 And when you *do* want an LLM in the loop (to decide which action items matter, or to draft ticket descriptions), it can discover these tools via `--describe` and invoke them through shell. You get the best of both worlds: LLM intelligence where it adds value, bash orchestration where it doesn't.
 

@@ -24,7 +24,7 @@ LLM agents need to discover and use tools. Right now there are two worlds:
 | **Scriptable without an LLM** | Yes, that's the whole point of CLIs | Not really, designed for LLM interaction |
 | **Adoption cost** | One flag/decorator | New protocol, server scaffolding, SDK |
 
-The gap is discovery. MTP fills it.
+The gap for CLIs is discovery. MTP fills it.
 
 ## Four things MTP does
 
@@ -57,8 +57,6 @@ $ atlasctl --describe
 ```
 
 If you're already using a CLI framework (Click, Cobra, Clap, Commander), just add the MTP SDK and you get `--describe` for free. The SDK reads the types, defaults, and help strings your framework already knows about. One function call, zero extra documentation.
-
-MTP has two layers of type information, matching how CLIs actually work. Arg types are flat (`string`, `boolean`, `enum`, etc.) because CLI flags and positional arguments are always scalar. For structured data flowing through stdin/stdout, IO descriptors support full JSON Schema (draft 2020-12): nested objects, arrays, unions, pattern validation, conditional fields.
 
 ### 2. Turns any CLI into an MCP server
 

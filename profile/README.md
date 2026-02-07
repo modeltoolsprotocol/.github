@@ -94,6 +94,10 @@ The 2,500+ MCP servers people have built? They're all CLI tools now. Pipe their 
 
 ## Why composability matters
 
+When an LLM orchestrates tool calls via MCP, every intermediate result flows back through the model. Pull a Confluence page? The entire page body enters the context window. Search Jira for existing tickets? Every result goes into the context window. Create a ticket? The response goes into the context window. A five-step workflow means five inference round-trips, each one slow, expensive, and adding to an ever-growing context that the model has to re-read on every turn. Anthropic themselves found that tool definitions alone can consume [134,000 tokens](https://www.anthropic.com/engineering/advanced-tool-use) before the user has said a word.
+
+With composable CLIs, the same workflow is a bash script:
+
 ```bash
 # Pull a Confluence page, find action items, create Jira tickets for untracked ones
 atlasctl confluence page get --page-id "$PAGE_ID" --format markdown \
@@ -106,7 +110,9 @@ atlasctl confluence page get --page-id "$PAGE_ID" --format markdown \
     done
 ```
 
-No LLM needed. No tokens burned. Runs in CI, runs in a cron job, runs on a Raspberry Pi. And when you *do* want an LLM in the loop, it can discover these tools via `--describe` and invoke them through shell.
+No LLM in the loop. No tokens burned on intermediate data the model doesn't need to see. No context window bloat. Deterministic, fast, free. Runs in CI, runs in a cron job, runs on a Raspberry Pi.
+
+And when you *do* want an LLM in the loop (to decide which action items matter, or to draft ticket descriptions), it can discover these tools via `--describe` and invoke them through shell. You get the best of both worlds: LLM intelligence where it adds value, bash orchestration where it doesn't.
 
 ## Repositories
 

@@ -68,9 +68,20 @@ Drop it into your Claude Desktop config and it works like any other MCP server. 
 
 ### 3. Turns any MCP server into a composable CLI
 
+Atlassian ships an MCP server at `mcp.atlassian.com`. With `mtpcli wrap`, it's a CLI:
+
 ```bash
-$ mtpcli wrap --server "uvx snowflake-mcp --account myaccount" \
-    list_objects -- --object_type database
+# Discover what tools the Atlassian MCP server offers
+$ mtpcli wrap --url "https://mcp.atlassian.com/v1/mcp" --describe
+
+# Fetch a Confluence page
+$ mtpcli wrap --url "https://mcp.atlassian.com/v1/mcp" \
+    getConfluencePage -- --cloudId "$CLOUD_ID" --pageId 12345 --contentFormat markdown
+
+# Pipe it into jq, grep, or anything else
+$ mtpcli wrap --url "https://mcp.atlassian.com/v1/mcp" \
+    getConfluencePage -- --cloudId "$CLOUD_ID" --pageId 12345 --contentFormat markdown \
+    | jq -r '.body'
 ```
 
 The 2,500+ MCP servers people have built? They're all CLI tools now. Pipe their output, use them in scripts, compose them with other tools.
